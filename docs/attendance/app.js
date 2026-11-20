@@ -1,7 +1,7 @@
 (()=>{'use strict';
 const $=s=>document.querySelector(s);let records=[],updatedAt=null,master=null,busy=false,viewPassword='',generation=0;
 const today=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Seoul'}).format(new Date());$('#month').value=today.slice(0,7);
-const DATA_URL='https://raw.githubusercontent.com/DONGYEON-KIM-BLACK/BonitoU_Dashboard_Releases/main/attendance/records.enc.json';
+const DATA_URL='https://api.github.com/repos/DONGYEON-KIM-BLACK/BonitoU_Dashboard_Releases/contents/attendance/records.enc.json?ref=main';
 const duration=n=>Math.floor(n/60)+'시간 '+n%60+'분',minutes=r=>r.start&&r.end?Number(r.end.slice(0,2))*60+Number(r.end.slice(3))-Number(r.start.slice(0,2))*60-Number(r.start.slice(3)):null;
 function signedIn(value){$('#login-card').hidden=value;$('#records-view').hidden=!value;$('#logout').hidden=!value;}
 function clear(){generation++;viewPassword='';records=[];updatedAt=null;master=null;$('#calendar').replaceChildren();$('#rows').replaceChildren();$('#summary').textContent='';$('#updated').textContent='';$('#password').value='';signedIn(false);}
@@ -23,7 +23,7 @@ function render(){
  if(!$('#rows').children.length){const row=document.createElement('tr'),cell=document.createElement('td');cell.colSpan=4;cell.textContent='이 달에 저장된 근무 기록이 없습니다.';row.append(cell);$('#rows').append(row);}
 }
 async function fetchRecords(password){
- const response=await fetch(DATA_URL+'?t='+Date.now(),{cache:'no-store',credentials:'omit',referrerPolicy:'no-referrer',signal:AbortSignal.timeout(30000)});
+ const response=await fetch(DATA_URL+'&t='+Date.now(),{headers:{Accept:'application/vnd.github.raw+json'},cache:'no-store',credentials:'omit',referrerPolicy:'no-referrer',signal:AbortSignal.timeout(30000)});
  if(response.status===404)throw Error('아직 조회 기록이 없습니다. 마스터 PC에서 먼저 동기화해 주세요.');if(!response.ok)throw Error('기록을 불러오지 못했습니다. 잠시 후 새로고침해 주세요.');
  const text=await response.text();if(text.length>12000000)throw Error('기록 파일 크기를 확인해 주세요.');return validated(await window.BonitoAttendanceCrypto.unlock(JSON.parse(text),password));
 }
