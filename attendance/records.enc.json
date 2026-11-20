@@ -1,0 +1,10 @@
+{
+  "format": "bonito-attendance-encrypted",
+  "version": 1,
+  "kdf": "PBKDF2-SHA256",
+  "iterations": 600000,
+  "cipher": "AES-256-GCM",
+  "salt": "0s9W1jitz6budel+EFBCDw==",
+  "iv": "UCb1hiVolJtPDLuR",
+  "ciphertext": "ZcvGuQVzZ1tEtMue6yB9tBx7vums0MqqdPWv8A7HaRUGYXSHAwjGcaXVZnHV74CI1IplLi9O/8GPAY0MHLIB6u8Gba2SC6t3q0w+AMNr+6Y8FOu+NT+uI97/ux/uH3Kw64j0prPZ8plcHl2fg1sMT9QSeegb7g9/r8gSnISN685lsMCettlmFyiaoC1+o4JelJ7x1ZsphNHuUIshqPdZ4YQMq9VAxydbrDCvHo5jfS+9Nk3pIC2xCSTQQs2CvuJLcOZYbmko3khwQhEyM0cRTfs4k0NYDw8l3XowNB0gnFaeEZtMjH/34okkGELHIl6d34ScG0PdMA4HeF5WPmTyDc9lt/QFiuO889sLrRaaXXO7GA1YABC3OyspZ0ZVSpjP9LL1ptRgBeVbBNgKD3+kd8UtaoUrUcE0ZngOQ5Fl36eT9Fajri0AJYCi0MCJBzlnaxx9O9P2RRb2yITIdTKuJ6DQEyk4Wt+IVzDxYELjrchjNzFRbj6wBpypLHYX9DRnSR/WZ3QwmTQkw9Y9XF5lm9JHdcOjVT7SW0OfNpbpY/Fjmi7CrmBp7F4+h482HFUDlxkgSbtXqxXtdUY0gNZqOgf2LoJlNoEbpZgbXvEFHp32xKmWHPqhG0P1sIGP50WzhtQx80WUX/LHDCu9QbKedsugjG11cTv4Ubq/dKPg1fJBVmb2a5N/fIuSbxnlxi+lUJyv9I7X0kimMoSE82mg06qnqNam1Q=="
+}
