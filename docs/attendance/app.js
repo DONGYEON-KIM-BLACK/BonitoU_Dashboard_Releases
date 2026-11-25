@@ -4,7 +4,7 @@ const today=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Seoul'}).format(new 
 const DATA_URL='https://api.github.com/repos/DONGYEON-KIM-BLACK/BonitoU_Dashboard_Releases/contents/attendance/records.enc.json?ref=main';
 const duration=n=>Math.floor(n/60)+'시간 '+n%60+'분',minutes=r=>window.bonitoAttendanceWork.minutes(r);
 function signedIn(value){$('#login-card').hidden=value;$('#records-view').hidden=!value;$('#logout').hidden=!value;}
-function clear(){generation++;viewPassword='';records=[];updatedAt=null;master=null;$('#calendar').replaceChildren();$('#rows').replaceChildren();$('#summary').textContent='';$('#updated').textContent='';$('#password').value='';signedIn(false);}
+function clear(){generation++;viewPassword='';records=[];updatedAt=null;master=null;$('#calendar').replaceChildren();$('#summary').textContent='';$('#updated').textContent='';$('#password').value='';signedIn(false);}
 function validated(value){
  if(!value||value.format!=='bonito-attendance'||![1,2].includes(value.version)||!Array.isArray(value.records)||value.records.length>50000)throw Error('근무 기록 형식이 다릅니다.');
  const seen=new Set();for(const r of value.records){if(!r||!/^\d{4}-\d{2}-\d{2}$/.test(r.date)||seen.has(r.date))throw Error('기록 날짜를 확인해 주세요.');seen.add(r.date);window.bonitoAttendanceWork.metadata(r);for(const t of [r.start,r.end])if(t&&!/^([01]\d|2[0-3]):[0-5]\d$/.test(t))throw Error('기록 시간을 확인해 주세요.');}return value;
@@ -13,14 +13,12 @@ function render(){
  const month=$('#month').value;if(!/^\d{4}-\d{2}$/.test(month))return;const [y,m]=month.split('-').map(Number),days=new Date(Date.UTC(y,m,0)).getUTCDate(),byDate=new Map(records.filter(r=>r.date.startsWith(month)).map(r=>[r.date,r]));
  const complete=[...byDate.values()].filter(r=>minutes(r)!==null),total=complete.reduce((sum,r)=>sum+minutes(r),0);let rest=0;
  for(let d=1;d<=days;d++){const key=month+'-'+String(d).padStart(2,'0'),r=byDate.get(key);if(key<=today&&!r?.start&&!r?.end&&!r?.extraSessions?.length)rest++;}
- $('#month-title').textContent=y+'년 '+m+'월';const types=window.bonitoAttendanceWork.breakdown(complete);$('#summary').textContent='근무 '+complete.length+'일 (출근 '+types.officeDays+'일, 재택 '+types.homeDays+'일), 휴무 '+rest+'일, 총 '+duration(total)+' 근무';
- $('#updated').textContent=(updatedAt?'마지막 온라인 저장 · '+new Date(updatedAt).toLocaleString('ko-KR',{timeZone:'Asia/Seoul'}):'온라인 기록 없음')+(master?.name?' · 마스터: '+master.name:'');
- $('#calendar').replaceChildren();$('#rows').replaceChildren();
+ $('#month-title').textContent=y+'년 '+m+'월';$('#summary').textContent='총 '+duration(total)+' 근무 · 휴무 '+rest+'일';
+ $('#updated').textContent=(updatedAt?'마지막 온라인 저장 · '+new Date(updatedAt).toLocaleString('ko-KR',{timeZone:'Asia/Seoul'}):'온라인 기록 없음');
+ $('#calendar').replaceChildren();
  const offset=(new Date(Date.UTC(y,m-1,1)).getUTCDay()+6)%7;for(let i=0;i<offset;i++){const e=document.createElement('div');e.className='day empty';$('#calendar').append(e);}
- for(let d=1;d<=days;d++){const key=month+'-'+String(d).padStart(2,'0'),r=byDate.get(key),n=r?minutes(r):null,status=n!==null?duration(n)+' · '+window.bonitoAttendanceWork.kind(r):r?.start?'퇴근 미기록':r?.end?'출근 미기록':key<=today?'휴무':'기록 없음';const cell=document.createElement('div');cell.className='day'+(key===today?' today':'');cell.setAttribute('role','gridcell');for(const [tag,text]of [['span',d+(key===today?' 오늘':'')],['strong',status],['small',r?.start||r?.end?window.bonitoAttendanceWork.segments(r).map(s=>(s.workType==='home'?'재택 ':'출근 ')+(s.start||'—')+' ~ '+(s.end||'—')).join(' · '):'—']]){const el=document.createElement(tag);el.textContent=text;cell.append(el);}$('#calendar').append(cell);
-  if(r?.start||r?.end){const row=document.createElement('tr'),span=window.bonitoAttendanceWork.displayTimes(r);for(const text of [key,span.start||'—',span.end||'—',status]){const td=document.createElement('td');td.textContent=text;row.append(td);}$('#rows').append(row);}
+ for(let d=1;d<=days;d++){const key=month+'-'+String(d).padStart(2,'0'),r=byDate.get(key),n=r?minutes(r):null,status=n!==null?duration(n):r?.start?'미확정':r?.end?'미확정':key<=today?'휴무':'기록 없음';const cell=document.createElement('div');cell.className='day';cell.setAttribute('role','gridcell');for(const [tag,text]of [['span',d],['strong',status]]){const el=document.createElement(tag);el.textContent=text;cell.append(el);}$('#calendar').append(cell);
  }
- if(!$('#rows').children.length){const row=document.createElement('tr'),cell=document.createElement('td');cell.colSpan=4;cell.textContent='이 달에 저장된 근무 기록이 없습니다.';row.append(cell);$('#rows').append(row);}
 }
 async function fetchRecords(password){
  const response=await fetch(DATA_URL+'&t='+Date.now(),{headers:{Accept:'application/vnd.github.raw+json'},cache:'no-store',credentials:'omit',referrerPolicy:'no-referrer',signal:AbortSignal.timeout(30000)});
