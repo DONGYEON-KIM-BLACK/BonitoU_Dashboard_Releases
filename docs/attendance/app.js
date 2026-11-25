@@ -3,7 +3,7 @@ const $=s=>document.querySelector(s);let records=[],updatedAt=null,master=null,b
 const today=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Seoul'}).format(new Date());$('#month').value=today.slice(0,7);
 const DATA_URL='https://api.github.com/repos/DONGYEON-KIM-BLACK/BonitoU_Dashboard_Releases/contents/attendance/records.enc.json?ref=main';
 const duration=n=>Math.floor(n/60)+'시간 '+n%60+'분',minutes=r=>window.bonitoAttendanceWork.minutes(r);
-function signedIn(value){$('#login-card').hidden=value;$('#records-view').hidden=!value;$('#logout').hidden=!value;}
+function signedIn(value){$('#login-card').hidden=value;$('#records-view').hidden=!value;$('#logout').hidden=!value;$('#refresh').hidden=!value;}
 function clear(){generation++;viewPassword='';records=[];updatedAt=null;master=null;$('#calendar').replaceChildren();$('#summary').textContent='';$('#updated').textContent='';$('#password').value='';signedIn(false);}
 function validated(value){
  if(!value||value.format!=='bonito-attendance'||![1,2].includes(value.version)||!Array.isArray(value.records)||value.records.length>50000)throw Error('근무 기록 형식이 다릅니다.');
