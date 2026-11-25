@@ -17,7 +17,7 @@ function render(){
  $('#updated').textContent=(updatedAt?'마지막 온라인 저장 · '+new Date(updatedAt).toLocaleString('ko-KR',{timeZone:'Asia/Seoul'}):'온라인 기록 없음');
  $('#calendar').replaceChildren();
  const offset=(new Date(Date.UTC(y,m-1,1)).getUTCDay()+6)%7;for(let i=0;i<offset;i++){const e=document.createElement('div');e.className='day empty';$('#calendar').append(e);}
- for(let d=1;d<=days;d++){const key=month+'-'+String(d).padStart(2,'0'),r=byDate.get(key),n=r?minutes(r):null,status=n!==null?duration(n):r?.start?'미확정':r?.end?'미확정':key<=today?'휴무':'기록 없음';const cell=document.createElement('div');cell.className='day';cell.setAttribute('role','gridcell');for(const [tag,text]of [['span',d],['strong',status]]){const el=document.createElement(tag);el.textContent=text;cell.append(el);}$('#calendar').append(cell);
+ for(let d=1;d<=days;d++){const key=month+'-'+String(d).padStart(2,'0'),r=byDate.get(key),n=r?minutes(r):null,status=n!==null?duration(n):r?.start?'미확정':r?.end?'미확정':key<=today?'휴무':'기록 없음';const cell=document.createElement('div');cell.className='day';cell.setAttribute('role','gridcell');for(const [tag,text]of [['span',d],['strong',status],['small',(()=>{const span=window.bonitoAttendanceWork.displayTimes(r);return '출근 '+(span.start||'—')+' · 퇴근 '+(span.end||'—');})()]]){const el=document.createElement(tag);el.textContent=text;cell.append(el);}$('#calendar').append(cell);
  }
 }
 async function fetchRecords(password){
