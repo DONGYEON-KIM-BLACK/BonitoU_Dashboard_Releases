@@ -5,3 +5,5 @@
 #summary strong{font-weight:700;color:var(--green)}
 
 .header-actions{display:flex;align-items:center;gap:8px}
+
+#summary strong{display:block;margin-top:4px}
