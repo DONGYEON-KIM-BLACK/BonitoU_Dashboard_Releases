@@ -13,7 +13,7 @@ function render(){
  const month=$('#month').value;if(!/^\d{4}-\d{2}$/.test(month))return;const [y,m]=month.split('-').map(Number),days=new Date(Date.UTC(y,m,0)).getUTCDate(),byDate=new Map(records.filter(r=>r.date.startsWith(month)).map(r=>[r.date,r]));
  const complete=[...byDate.values()].filter(r=>minutes(r)!==null),total=complete.reduce((sum,r)=>sum+minutes(r),0);let rest=0;
  for(let d=1;d<=days;d++){const key=month+'-'+String(d).padStart(2,'0'),r=byDate.get(key);if(key<=today&&!r?.start&&!r?.end&&!r?.extraSessions?.length)rest++;}
- $('#month-title').textContent=y+'년 '+m+'월';$('#summary').textContent='총 '+duration(total)+' 근무 · 휴무 '+rest+'일';
+ $('#month-title').textContent=y+'년 '+m+'월';const types=window.bonitoAttendanceWork.breakdown(complete);$('#summary').replaceChildren(document.createTextNode('근무 '+complete.length+'일 (출근 '+types.officeDays+'일, 재택 '+types.homeDays+'일), 휴무 '+rest+'일, '));const totalLabel=document.createElement('strong');totalLabel.textContent='총 '+duration(total)+' 근무';$('#summary').append(totalLabel);
  $('#updated').textContent=(updatedAt?'마지막 온라인 저장 · '+new Date(updatedAt).toLocaleString('ko-KR',{timeZone:'Asia/Seoul'}):'온라인 기록 없음');
  $('#calendar').replaceChildren();
  const offset=(new Date(Date.UTC(y,m-1,1)).getUTCDay()+6)%7;for(let i=0;i<offset;i++){const e=document.createElement('div');e.className='day empty';$('#calendar').append(e);}
